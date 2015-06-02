@@ -30,7 +30,6 @@ namespace WpfTest01.Lib
 
             Debug.WriteLine("Request: Detecting {0}", selectedFile);
 
-            // Call detection REST API
             using (var fileStream = File.OpenRead(selectedFile))
             {
                 try
