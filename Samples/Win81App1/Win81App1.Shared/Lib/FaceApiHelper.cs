@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.ProjectOxford.Face;
-using WpfTest01.UserControls;
+using Win81App1.UserControls;
 
 namespace WpfTest01.Lib
 {

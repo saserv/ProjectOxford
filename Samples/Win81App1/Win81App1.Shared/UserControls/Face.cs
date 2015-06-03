@@ -7,7 +7,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WpfTest01.UserControls
+namespace Win81App1.UserControls
 {
     /// <summary>
     /// Face view model
@@ -77,7 +77,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _gender = value;
-                OnPropertyChanged<string>();
+                OnPropertyChanged();
             }
         }
 
@@ -94,18 +94,18 @@ namespace WpfTest01.UserControls
             set
             {
                 _age = value;
-                OnPropertyChanged<string>();
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         /// Gets face rectangle on image
         /// </summary>
-        public System.Windows.Int32Rect UIRect
+        public Int32Rect UiRect
         {
             get
             {
-                return new System.Windows.Int32Rect(Left, Top, Width, Height);
+                return new Int32Rect(Left, Top, Width, Height);
             }
         }
 
@@ -140,7 +140,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _personName = value;
-                OnPropertyChanged<string>();
+                OnPropertyChanged();
             }
         }
 
@@ -157,7 +157,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _height = value;
-                OnPropertyChanged<int>();
+                OnPropertyChanged();
             }
         }
 
@@ -174,7 +174,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _left = value;
-                OnPropertyChanged<int>();
+                OnPropertyChanged();
             }
         }
 
@@ -191,7 +191,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _top = value;
-                OnPropertyChanged<int>();
+                OnPropertyChanged();
             }
         }
 
@@ -208,7 +208,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _width = value;
-                OnPropertyChanged<int>();
+                OnPropertyChanged();
             }
         }
 
@@ -219,9 +219,8 @@ namespace WpfTest01.UserControls
         /// <summary>
         /// NotifyProperty Helper functions
         /// </summary>
-        /// <typeparam name="T">property type</typeparam>
         /// <param name="caller">property change caller</param>
-        private void OnPropertyChanged<T>([CallerMemberName]string caller = null)
+        private void OnPropertyChanged([CallerMemberName]string caller = null)
         {
             var handler = PropertyChanged;
             if (handler != null)
@@ -231,5 +230,21 @@ namespace WpfTest01.UserControls
         }
 
         #endregion Methods
+    }
+
+    public class Int32Rect
+    {
+        public int Left { get; set; }
+        public int Top { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public Int32Rect(int left, int top, int width, int height)
+        {
+            Left = left;
+            Top = top;
+            Width = width;
+            Height = height;
+        }
     }
 }
