@@ -30,43 +30,44 @@ namespace Windows81App1.Lib
             var facesRect = new ObservableCollection<Face>();
 
             Debug.WriteLine("Request: Detecting {0}", selectedFile);
-
             var sampleFile = await StorageFile.GetFileFromPathAsync(selectedFile);
             var fs = await FileIO.ReadBufferAsync(sampleFile);
-
-            try
-            {
-                var client = new FaceServiceClient(subscriptionKey);
-                var faces = await client.DetectAsync(fs.AsStream(), false, true, true);
-                Debug.WriteLine("Response: Success. Detected {0} face(s) in {1}", faces.Length, selectedFile);
-                var imageInfo = await GetImageInfoForRendering(selectedFile);
-                Debug.WriteLine("{0} face(s) has been detected", faces.Length);
-
-                foreach (var face in faces)
+            using( var stream = fs.AsStream())
+            { 
+                try
                 {
-                    detectedFaces.Add(new Face
+                    var client = new FaceServiceClient(subscriptionKey);
+                    var faces = await client.DetectAsync(stream, false, true, true);
+                    Debug.WriteLine("Response: Success. Detected {0} face(s) in {1}", faces.Length, selectedFile);
+                    var imageInfo = await GetImageInfoForRendering(selectedFile);
+                    Debug.WriteLine("{0} face(s) has been detected", faces.Length);
+
+                    foreach (var face in faces)
                     {
-                        ImagePath = selectedFile,
-                        Left = face.FaceRectangle.Left,
-                        Top = face.FaceRectangle.Top,
-                        Width = face.FaceRectangle.Width,
-                        Height = face.FaceRectangle.Height,
-                        FaceId = face.FaceId.ToString(),
-                        Gender = face.Attributes.Gender,
-                        Age = string.Format("{0:#} years old", face.Attributes.Age),
-                    });
-                }
+                        detectedFaces.Add(new Face
+                        {
+                            ImagePath = selectedFile,
+                            Left = face.FaceRectangle.Left,
+                            Top = face.FaceRectangle.Top,
+                            Width = face.FaceRectangle.Width,
+                            Height = face.FaceRectangle.Height,
+                            FaceId = face.FaceId.ToString(),
+                            Gender = face.Attributes.Gender,
+                            Age = string.Format("{0:#} years old", face.Attributes.Age),
+                        });
+                    }
 
-                // Convert detection result into UI binding object for rendering
-                foreach (var face in CalculateFaceRectangleForRendering(faces, MaxImageSize, imageInfo))
+                    // Convert detection result into UI binding object for rendering
+                    foreach (var face in CalculateFaceRectangleForRendering(faces, MaxImageSize, imageInfo))
+                    {
+                        facesRect.Add(face);
+                    }
+
+                }
+                catch (Exception ex)
                 {
-                    facesRect.Add(face);
+                    Debug.WriteLine(ex.ToString());
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
             }
             var returnData = new Tuple<ObservableCollection<Face>, ObservableCollection<Face>>(detectedFaces, facesRect);
             return returnData;

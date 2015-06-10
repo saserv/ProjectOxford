@@ -38,6 +38,12 @@ namespace Windows81App1
             // file is null if user cancels the file picker.
             if (file != null)
             {
+                var bitmapImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
+                using (var fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
+                {
+                    bitmapImage.SetSource(fileStream);
+                    ImageDisplay.Source = bitmapImage;
+                }
                 SelectedFile = file.Path;
                 var faceApi = new Lib.FaceApiHelper();
                 var returnData = await faceApi.StartFaceDetection(SelectedFile, "");
