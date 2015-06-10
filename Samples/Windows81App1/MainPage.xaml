@@ -4,24 +4,33 @@
       xmlns:local="using:Windows81App1"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:lib="using:Windows81App1.Lib"
       mc:Ignorable="d">
 
+    <Page.Resources>
+        <lib:MarginConverter x:Key="marginConverter" />
+    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"></ColumnDefinition>
             <ColumnDefinition Width="250"></ColumnDefinition>
             <ColumnDefinition Width="250"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Button x:Name="ButtonGetData"
                 Grid.ColumnSpan="2"
-                Click="ButtonGetData_Click">Get Data</Button>
+                Click="ButtonGetData_Click"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">Get Data</Button>
 
-        <Image HorizontalAlignment="Center"
-               VerticalAlignment="Center"
+        <Image HorizontalAlignment="Left"
+               VerticalAlignment="Top"
                Grid.Row="1"
+               Grid.Column="1"
                Height="{Binding MaxImageSize}"
                Width="{Binding MaxImageSize}"
                x:Name="ImageDisplay"
@@ -29,7 +38,7 @@
 
         <StackPanel x:Name="StackPanelImageFacesDetected"
                     Grid.Row="1"
-                    Grid.Column="0">
+                    Grid.Column="1">
             <ItemsControl HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           ItemsSource="{Binding FacesRect}"
@@ -41,7 +50,9 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Height="{Binding MaxImageSize}"
-                                Width="{Binding MaxImageSize}" />
+                                Width="{Binding MaxImageSize}"
+                                Margin="{Binding LeftTop, Converter={StaticResource marginConverter}}">
+                        </Canvas>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
@@ -65,7 +76,7 @@
 
         <StackPanel x:Name="StackPanelFaces"
                     Grid.Row="1"
-                    Grid.Column="1">
+                    Grid.Column="2">
             <ListView MaxHeight="360"
                       Width="300"
                       HorizontalAlignment="Left"

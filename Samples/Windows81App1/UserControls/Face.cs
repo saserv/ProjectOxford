@@ -42,6 +42,8 @@ namespace Windows81App1.UserControls
         /// </summary>
         private int _width;
 
+        private string _leftTop;
+
         #endregion Fields
 
         #region Events
@@ -165,6 +167,7 @@ namespace Windows81App1.UserControls
             set
             {
                 _left = value;
+                CalulateLeftTop();
                 OnPropertyChanged();
             }
         }
@@ -182,8 +185,24 @@ namespace Windows81App1.UserControls
             set
             {
                 _top = value;
+                CalulateLeftTop();
                 OnPropertyChanged();
             }
+        }
+
+        public string LeftTop
+        {
+            get { return _leftTop; }
+            set
+            {
+                _leftTop = value;
+                OnPropertyChanged();
+           }
+        }
+
+        private void CalulateLeftTop()
+        {
+            _leftTop = string.Format("{0},{1}", Left, Top);
         }
 
         /// <summary>
