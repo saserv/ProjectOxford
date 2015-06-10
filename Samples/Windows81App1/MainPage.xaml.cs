@@ -1,30 +1,104 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+using Windows81App1.Annotations;
+using Windows81App1.UserControls;
 
 namespace Windows81App1
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : INotifyPropertyChanged
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            DataContext = this;
+
         }
+
+        private async void ButtonGetData_Click(object sender, RoutedEventArgs e)
+        {
+            var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
+            openPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            openPicker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+
+            // Filter to include a sample subset of file types.
+            openPicker.FileTypeFilter.Clear();
+            openPicker.FileTypeFilter.Add(".bmp");
+            openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".jpg");
+
+            // Open the file picker.
+            var file = await openPicker.PickSingleFileAsync();
+
+            // file is null if user cancels the file picker.
+            if (file != null)
+            {
+                SelectedFile = file.Path;
+                var faceApi = new Lib.FaceApiHelper();
+                var returnData = await faceApi.StartFaceDetection(SelectedFile, "");
+                DetectedFaces = returnData.Item1;
+                FacesRect = returnData.Item2;
+            }
+        }
+
+        #region Properties
+        private ObservableCollection<Face> _detectedFaces;
+        private ObservableCollection<Face> _facesRect;
+        private string _selectedFile;
+        public ObservableCollection<Face> DetectedFaces
+        {
+            get { return _detectedFaces; }
+            set
+            {
+                if (Equals(value, _detectedFaces)) return;
+                _detectedFaces = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Face> FacesRect
+        {
+            get { return _facesRect; }
+            set
+            {
+                if (Equals(value, _facesRect)) return;
+                _facesRect = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectedFile
+        {
+            get { return _selectedFile; }
+            set
+            {
+                if (value == _selectedFile) return;
+                _selectedFile = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int MaxImageSize
+        {
+            get
+            {
+                return 300;
+            }
+        }
+
+        #endregion
+
+        #region On Property Changed
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }

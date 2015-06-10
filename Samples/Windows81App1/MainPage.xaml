@@ -16,7 +16,8 @@
             <ColumnDefinition Width="250"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Button x:Name="ButtonGetData"
-                Grid.ColumnSpan="2">Get Data</Button>
+                Grid.ColumnSpan="2"
+                Click="ButtonGetData_Click">Get Data</Button>
 
         <Image HorizontalAlignment="Center"
                VerticalAlignment="Center"
