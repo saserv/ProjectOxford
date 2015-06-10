@@ -202,7 +202,7 @@ namespace Windows81App1.UserControls
 
         private void CalulateLeftTop()
         {
-            _leftTop = string.Format("{0},{1}", Left, Top);
+            _leftTop = string.Format("{0},{1}", _left, _top);
         }
 
         /// <summary>
