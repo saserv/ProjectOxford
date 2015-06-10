@@ -19,9 +19,11 @@ namespace Windows81App1
 
         private async void ButtonGetData_Click(object sender, RoutedEventArgs e)
         {
-            var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
-            openPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
-            openPicker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            var openPicker = new Windows.Storage.Pickers.FileOpenPicker
+            {
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary,
+                ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail
+            };
 
             // Filter to include a sample subset of file types.
             openPicker.FileTypeFilter.Clear();
