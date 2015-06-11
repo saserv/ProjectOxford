@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows81App1.UserControls;
@@ -24,10 +25,9 @@ namespace Windows81App1.Lib
             }
         }
 
-        public async Task<Tuple<ObservableCollection<Face>, ObservableCollection<Face>>> StartFaceDetection(string selectedFile, string subscriptionKey)
+        public async Task<ObservableCollection<Face>> StartFaceDetection(string selectedFile, StorageFile file, string subscriptionKey)
         {
             var detectedFaces = new ObservableCollection<Face>();
-            var facesRect = new ObservableCollection<Face>();
 
             Debug.WriteLine("Request: Detecting {0}", selectedFile);
             var sampleFile = await StorageFile.GetFileFromPathAsync(selectedFile);
@@ -37,14 +37,28 @@ namespace Windows81App1.Lib
                 try
                 {
                     var client = new FaceServiceClient(subscriptionKey);
-                    var faces = await client.DetectAsync(stream, false, true, true);
+                    var faces = await client.DetectAsync(stream, true, true, true);
                     Debug.WriteLine("Response: Success. Detected {0} face(s) in {1}", faces.Length, selectedFile);
                     var imageInfo = await GetImageInfoForRendering(selectedFile);
                     Debug.WriteLine("{0} face(s) has been detected", faces.Length);
 
                     foreach (var face in faces)
                     {
-                        detectedFaces.Add(new Face
+
+                        // get face file
+                        var startingPoint = new Point(face.FaceRectangle.Left, face.FaceRectangle.Top);
+                        var tbSize = new Size(face.FaceRectangle.Width, face.FaceRectangle.Height);
+
+                        var fileName = string.Format("{0}.jpg", face.FaceId);
+                        var fileFaceImage = await KnownFolders.PicturesLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+                        // save face file
+                        var newSourceFileName = string.Format("{0}.jpg", Guid.NewGuid());
+                        var newSourceFile = await KnownFolders.PicturesLibrary.CreateFileAsync(newSourceFileName, CreationCollisionOption.ReplaceExisting);
+                        await file.CopyAndReplaceAsync(newSourceFile);
+                        await CropBitmap.SaveCroppedBitmapAsync(newSourceFile, fileFaceImage, startingPoint, tbSize);
+
+                        var newFace = new Face
                         {
                             ImagePath = selectedFile,
                             Left = face.FaceRectangle.Left,
@@ -54,23 +68,17 @@ namespace Windows81App1.Lib
                             FaceId = face.FaceId.ToString(),
                             Gender = face.Attributes.Gender,
                             Age = string.Format("{0:#} years old", face.Attributes.Age),
-                        });
+                            ImageFacePath = fileFaceImage.Path
+                    };
+                        detectedFaces.Add(newFace);
                     }
-
-                    // Convert detection result into UI binding object for rendering
-                    foreach (var face in CalculateFaceRectangleForRendering(faces, MaxImageSize, imageInfo))
-                    {
-                        facesRect.Add(face);
-                    }
-
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.ToString());
                 }
             }
-            var returnData = new Tuple<ObservableCollection<Face>, ObservableCollection<Face>>(detectedFaces, facesRect);
-            return returnData;
+            return detectedFaces;
         }
         #endregion
 
