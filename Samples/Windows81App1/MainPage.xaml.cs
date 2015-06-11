@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.Storage;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows81App1.Annotations;
 using Windows81App1.UserControls;
 
@@ -44,7 +46,15 @@ namespace Windows81App1
                 //    bitmapImage.SetSource(fileStream);
                 //    ImageDisplay.Source = bitmapImage;
                 //}
-                SelectedFileUri = new Uri(file.Path, UriKind.RelativeOrAbsolute);
+
+                var folder = ApplicationData.Current.LocalFolder;
+                var newSourceFileName = string.Format(@"Temp\{0}.jpg", Guid.NewGuid());
+                var newSourceFile = await folder.CreateFileAsync(newSourceFileName, CreationCollisionOption.ReplaceExisting);
+                await file.CopyAndReplaceAsync(newSourceFile);
+
+
+                var uriSource = new Uri(newSourceFile.Path);
+                SelectedFileBitmapImage = new BitmapImage(uriSource);
                 //var faceApi = new Lib.FaceApiHelper();
                 //DetectedFaces = await faceApi.StartFaceDetection(SelectedFile, file, "4c138b4d82b947beb2e2926c92d1e514");
             }
@@ -52,7 +62,7 @@ namespace Windows81App1
 
         #region Properties
         private ObservableCollection<Face> _detectedFaces;
-        private Uri _selectedFileUri;
+        private BitmapImage _selectedFileBitmapImage;
 
         public ObservableCollection<Face> DetectedFaces
         {
@@ -65,16 +75,16 @@ namespace Windows81App1
             }
         }
 
-        public Uri SelectedFileUri
+        public BitmapImage SelectedFileBitmapImage
         {
             get
             {
-                return _selectedFileUri;
+                return _selectedFileBitmapImage;
             }
             set
             {
-                if (value == _selectedFileUri) return;
-                _selectedFileUri = value;
+                if (value == _selectedFileBitmapImage) return;
+                _selectedFileBitmapImage = value;
                 OnPropertyChanged();
             }
         }
