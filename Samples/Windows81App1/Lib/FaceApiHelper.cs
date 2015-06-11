@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -39,14 +40,7 @@ namespace Windows81App1.Lib
                     foreach (var face in faces)
                     {
 
-                        // get face file
-                        var faceStartPoint = new Point(face.FaceRectangle.Left, face.FaceRectangle.Top);
-                        var faceSize = new Size(face.FaceRectangle.Width, face.FaceRectangle.Height);
-
-                        // save face file
-                        var fileName = string.Format(@"Temp\{0}.jpg", face.FaceId);
-                        var fileFaceImage = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-                        await CropBitmap.SaveCroppedBitmapAsync(file, fileFaceImage, faceStartPoint, faceSize);
+                        var fileFaceImage = await FileHelper.SaveFaceImageFile(file, face);
 
                         var newFace = new Face
                         {

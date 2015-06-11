@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -7,6 +8,7 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows81App1.Annotations;
+using Windows81App1.Lib;
 using Windows81App1.UserControls;
 
 namespace Windows81App1
@@ -41,27 +43,18 @@ namespace Windows81App1
             // file is null if user cancels the file picker.
             if (file == null) return;
 
-            var newSourceFile = await CreateCopyOfSelectedImage(file);
+            FileHelper.ClearTempFolder();
 
+            var newSourceFile = await FileHelper.CreateCopyOfSelectedImage(file);
+            var uriSource = new Uri(newSourceFile.Path);
+            SelectedFileBitmapImage = new BitmapImage(uriSource);
+            
             // start face api detection
             var faceApi = new Lib.FaceApiHelper();
             DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, file, "4c138b4d82b947beb2e2926c92d1e514");
         }
 
-        private async Task<StorageFile> CreateCopyOfSelectedImage(StorageFile file)
-        {
-            var newSourceFileName = string.Format(@"Temp\{0}.jpg", Guid.NewGuid());
-            var newSourceFile =
-                await
-                    ApplicationData.Current.LocalFolder.CreateFileAsync(newSourceFileName,
-                        CreationCollisionOption.ReplaceExisting);
-            await file.CopyAndReplaceAsync(newSourceFile);
-
-            var uriSource = new Uri(newSourceFile.Path);
-            SelectedFileBitmapImage = new BitmapImage(uriSource);
-            return newSourceFile;
-        }
-
+        
         #region Properties
         private ObservableCollection<Face> _detectedFaces;
         private BitmapImage _selectedFileBitmapImage;

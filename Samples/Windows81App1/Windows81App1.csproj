@@ -114,6 +114,7 @@
     </Compile>
     <Compile Include="Lib\CropBitmap.cs" />
     <Compile Include="Lib\FaceApiHelper.cs" />
+    <Compile Include="Lib\FileHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
