@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows81App1.UserControls
 {
@@ -8,52 +9,21 @@ namespace Windows81App1.UserControls
     {
         #region Fields
 
-        /// <summary>
-        /// Face gender text string
-        /// </summary>
         private string _gender;
-
-        /// <summary>
-        /// Face age text string
-        /// </summary>
         private string _age;
-
-        /// <summary>
-        /// Person name
-        /// </summary>
         private string _personName;
-
-        /// <summary>
-        /// Face height in pixel
-        /// </summary>
         private int _height;
-
-        /// <summary>
-        /// Face position X relative to image left-top in pixel
-        /// </summary>
         private int _left;
-
-        /// <summary>
-        /// Face position Y relative to image left-top in pixel
-        /// </summary>
         private int _top;
-
-        /// <summary>
-        /// Face width in pixel
-        /// </summary>
         private int _width;
-
         private string _imageFacePath;
 
-        private Uri _imageFacePathUri;
+        private BitmapImage _imageFaceBitmapImage;
 
         #endregion Fields
 
         #region Events
 
-        /// <summary>
-        /// Implement INotifyPropertyChanged interface
-        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion Events
@@ -85,14 +55,6 @@ namespace Windows81App1.UserControls
             {
                 _age = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public Int32Rect UiRect
-        {
-            get
-            {
-                return new Int32Rect(Left, Top, Width, Height);
             }
         }
 
@@ -170,7 +132,7 @@ namespace Windows81App1.UserControls
             set
             {
                 _imageFacePath = value;
-                ImageFacePathUri = new Uri(_imageFacePath, UriKind.RelativeOrAbsolute);
+                ImageFaceBitmapImage = new BitmapImage(new Uri(_imageFacePath));
                 OnPropertyChanged();
             }
         }
@@ -189,12 +151,12 @@ namespace Windows81App1.UserControls
             }
         }
 
-        public Uri ImageFacePathUri
+        public BitmapImage ImageFaceBitmapImage
         {
-            get { return _imageFacePathUri; }
+            get { return _imageFaceBitmapImage; }
             set
             {
-                _imageFacePathUri = value;
+                _imageFaceBitmapImage = value;
                 OnPropertyChanged();
             }
         }
@@ -213,21 +175,5 @@ namespace Windows81App1.UserControls
         }
 
         #endregion Methods
-    }
-
-    public class Int32Rect
-    {
-        public int Left { get; set; }
-        public int Top { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-
-        public Int32Rect(int left, int top, int width, int height)
-        {
-            Left = left;
-            Top = top;
-            Width = width;
-            Height = height;
-        }
     }
 }

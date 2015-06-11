@@ -38,26 +38,16 @@ namespace Windows81App1
             var file = await openPicker.PickSingleFileAsync();
 
             // file is null if user cancels the file picker.
-            if (file != null)
-            {
-                //var bitmapImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
-                //using (var fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
-                //{
-                //    bitmapImage.SetSource(fileStream);
-                //    ImageDisplay.Source = bitmapImage;
-                //}
+            if (file == null) return;
 
-                var folder = ApplicationData.Current.LocalFolder;
-                var newSourceFileName = string.Format(@"Temp\{0}.jpg", Guid.NewGuid());
-                var newSourceFile = await folder.CreateFileAsync(newSourceFileName, CreationCollisionOption.ReplaceExisting);
-                await file.CopyAndReplaceAsync(newSourceFile);
-
-
-                var uriSource = new Uri(newSourceFile.Path);
-                SelectedFileBitmapImage = new BitmapImage(uriSource);
-                //var faceApi = new Lib.FaceApiHelper();
-                //DetectedFaces = await faceApi.StartFaceDetection(SelectedFile, file, "4c138b4d82b947beb2e2926c92d1e514");
-            }
+            var newSourceFileName = string.Format(@"Temp\{0}.jpg", Guid.NewGuid());
+            var newSourceFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(newSourceFileName, CreationCollisionOption.ReplaceExisting);
+            await file.CopyAndReplaceAsync(newSourceFile);
+            
+            var uriSource = new Uri(newSourceFile.Path);
+            SelectedFileBitmapImage = new BitmapImage(uriSource);
+            var faceApi = new Lib.FaceApiHelper();
+            DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, file, "4c138b4d82b947beb2e2926c92d1e514");
         }
 
         #region Properties

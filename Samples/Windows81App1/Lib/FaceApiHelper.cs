@@ -48,7 +48,7 @@ namespace Windows81App1.Lib
                         var tbSize = new Size(face.FaceRectangle.Width, face.FaceRectangle.Height);
 
                         var fileName = string.Format(@"Temp\{0}.jpg", face.FaceId);
-                        var fileFaceImage = await KnownFolders.PicturesLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                        var fileFaceImage = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
                         // save face file
                         await CropBitmap.SaveCroppedBitmapAsync(newSourceFile, fileFaceImage, startingPoint, tbSize);
@@ -63,7 +63,7 @@ namespace Windows81App1.Lib
                             FaceId = face.FaceId.ToString(),
                             Gender = face.Attributes.Gender,
                             Age = string.Format("{0:#} years old", face.Attributes.Age),
-                            ImageFacePath = @"file:///" + fileFaceImage.Path
+                            ImageFacePath = fileFaceImage.Path
                         };
                         detectedFaces.Add(newFace);
                     }
