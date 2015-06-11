@@ -45,7 +45,7 @@ namespace Windows81App1
             
             // start face api detection
             var faceApi = new FaceApiHelper();
-            DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, file, "4c138b4d82b947beb2e2926c92d1e514");
+            DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, file, "");
         }
 
         
