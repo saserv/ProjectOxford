@@ -42,7 +42,7 @@ namespace Windows81App1.UserControls
         /// </summary>
         private int _width;
 
-        private string _imageFacePath;
+        private string _imageFace;
 
         #endregion Fields
 
@@ -161,12 +161,12 @@ namespace Windows81App1.UserControls
             }
         }
 
-        public string ImageFacePath
+        public string ImageFace
         {
-            get { return _imageFacePath; }
+            get { return _imageFace; }
             set
             {
-                _imageFacePath = value;
+                _imageFace = value;
                 OnPropertyChanged();
            }
         }
