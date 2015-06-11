@@ -74,5 +74,5 @@ namespace Windows81App1.Lib
             }
             return detectedFaces;
         }
-¡    }
+    }
 }
