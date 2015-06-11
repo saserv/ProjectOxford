@@ -46,15 +46,12 @@ namespace Windows81App1
                 }
                 SelectedFile = file.Path;
                 var faceApi = new Lib.FaceApiHelper();
-                var returnData = await faceApi.StartFaceDetection(SelectedFile, "");
-                DetectedFaces = returnData.Item1;
-                FacesRect = returnData.Item2;
+                DetectedFaces = await faceApi.StartFaceDetection(SelectedFile, file, "");
             }
         }
 
         #region Properties
         private ObservableCollection<Face> _detectedFaces;
-        private ObservableCollection<Face> _facesRect;
         private string _selectedFile;
         public ObservableCollection<Face> DetectedFaces
         {
@@ -67,16 +64,6 @@ namespace Windows81App1
             }
         }
 
-        public ObservableCollection<Face> FacesRect
-        {
-            get { return _facesRect; }
-            set
-            {
-                if (Equals(value, _facesRect)) return;
-                _facesRect = value;
-                OnPropertyChanged();
-            }
-        }
 
         public string SelectedFile
         {
