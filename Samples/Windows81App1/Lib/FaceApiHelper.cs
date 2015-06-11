@@ -36,22 +36,17 @@ namespace Windows81App1.Lib
                     Debug.WriteLine("Response: Success. Detected {0} face(s) in {1}", faces.Length, selectedFile);
                     Debug.WriteLine("{0} face(s) has been detected", faces.Length);
 
-                    var newSourceFileName = string.Format(@"Temp\{0}.jpg", Guid.NewGuid());
-                    var newSourceFile = await KnownFolders.PicturesLibrary.CreateFileAsync(newSourceFileName, CreationCollisionOption.ReplaceExisting);
-                    await file.CopyAndReplaceAsync(newSourceFile);
-
                     foreach (var face in faces)
                     {
 
                         // get face file
-                        var startingPoint = new Point(face.FaceRectangle.Left, face.FaceRectangle.Top);
-                        var tbSize = new Size(face.FaceRectangle.Width, face.FaceRectangle.Height);
-
-                        var fileName = string.Format(@"Temp\{0}.jpg", face.FaceId);
-                        var fileFaceImage = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                        var faceStartPoint = new Point(face.FaceRectangle.Left, face.FaceRectangle.Top);
+                        var faceSize = new Size(face.FaceRectangle.Width, face.FaceRectangle.Height);
 
                         // save face file
-                        await CropBitmap.SaveCroppedBitmapAsync(newSourceFile, fileFaceImage, startingPoint, tbSize);
+                        var fileName = string.Format(@"Temp\{0}.jpg", face.FaceId);
+                        var fileFaceImage = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                        await CropBitmap.SaveCroppedBitmapAsync(file, fileFaceImage, faceStartPoint, faceSize);
 
                         var newFace = new Face
                         {
