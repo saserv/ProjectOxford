@@ -42,7 +42,7 @@ namespace Windows81App1.UserControls
         /// </summary>
         private int _width;
 
-        private string _imageFacePath;
+        private string _leftTop;
 
         #endregion Fields
 
@@ -57,6 +57,9 @@ namespace Windows81App1.UserControls
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets gender text string 
+        /// </summary>
         public string Gender
         {
             get
@@ -71,6 +74,9 @@ namespace Windows81App1.UserControls
             }
         }
 
+        /// <summary>
+        /// Gets or sets age text string
+        /// </summary>
         public string Age
         {
             get
@@ -85,6 +91,9 @@ namespace Windows81App1.UserControls
             }
         }
 
+        /// <summary>
+        /// Gets face rectangle on image
+        /// </summary>
         public Int32Rect UiRect
         {
             get
@@ -93,18 +102,27 @@ namespace Windows81App1.UserControls
             }
         }
 
+        /// <summary>
+        /// Gets or sets image path
+        /// </summary>
         public string ImagePath
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets face id
+        /// </summary>
         public string FaceId
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets person's name
+        /// </summary>
         public string PersonName
         {
             get
@@ -119,6 +137,9 @@ namespace Windows81App1.UserControls
             }
         }
 
+        /// <summary>
+        /// Gets or sets face height
+        /// </summary>
         public int Height
         {
             get
@@ -133,6 +154,9 @@ namespace Windows81App1.UserControls
             }
         }
 
+        /// <summary>
+        /// Gets or sets face position X
+        /// </summary>
         public int Left
         {
             get
@@ -143,10 +167,14 @@ namespace Windows81App1.UserControls
             set
             {
                 _left = value;
+                CalulateLeftTop();
                 OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets face position Y
+        /// </summary>
         public int Top
         {
             get
@@ -157,20 +185,29 @@ namespace Windows81App1.UserControls
             set
             {
                 _top = value;
+                CalulateLeftTop();
                 OnPropertyChanged();
             }
         }
 
-        public string ImageFacePath
+        public string LeftTop
         {
-            get { return _imageFacePath; }
+            get { return _leftTop; }
             set
             {
-                _imageFacePath = value;
+                _leftTop = value;
                 OnPropertyChanged();
            }
         }
 
+        private void CalulateLeftTop()
+        {
+            _leftTop = string.Format("{0},{1}", _left, _top);
+        }
+
+        /// <summary>
+        /// Gets or sets face width
+        /// </summary>
         public int Width
         {
             get
@@ -189,6 +226,10 @@ namespace Windows81App1.UserControls
 
         #region Methods
 
+        /// <summary>
+        /// NotifyProperty Helper functions
+        /// </summary>
+        /// <param name="caller">property change caller</param>
         private void OnPropertyChanged([CallerMemberName]string caller = null)
         {
             var handler = PropertyChanged;

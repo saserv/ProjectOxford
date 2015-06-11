@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Windows81App1.App">
-      <m2:VisualElements DisplayName="Windows81App1" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Windows81App1" ForegroundText="light" BackgroundColor="#464646" ToastCapable="true">
+      <m2:VisualElements DisplayName="Windows81App1" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Windows81App1" ForegroundText="light" BackgroundColor="#464646">
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
     </Application>
@@ -27,6 +27,5 @@
     <Capability Name="videosLibrary" />
     <Capability Name="musicLibrary" />
     <Capability Name="internetClientServer" />
-    <DeviceCapability Name="location" />
   </Capabilities>
 </Package>
