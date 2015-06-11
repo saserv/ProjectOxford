@@ -34,12 +34,12 @@
                Source="{Binding SelectedFile}" />
 
         <Canvas HorizontalAlignment="Left"
-               VerticalAlignment="Top"
-               Grid.Row="1"
-               Grid.Column="1"
-               Height="{Binding MaxImageSize}"
-               Width="{Binding MaxImageSize}"
-               x:Name="CanvasDisplay" />
+                VerticalAlignment="Top"
+                Grid.Row="1"
+                Grid.Column="1"
+                Height="{Binding MaxImageSize}"
+                Width="{Binding MaxImageSize}"
+                x:Name="CanvasDisplay" />
 
 
         <StackPanel x:Name="StackPanelFaces"
@@ -74,7 +74,8 @@
                                    Grid.Row="0"
                                    Grid.RowSpan="3"
                                    Width="64"
-                                   Height="64">
+                                   Height="64"
+                                   Source="{Binding ImageFacePath}">
                             </Image>
                             <TextBlock Grid.Column="2"
                                        Grid.Row="1"

@@ -27,14 +27,18 @@ namespace Windows81App1.Lib
             Debug.WriteLine("Request: Detecting {0}", selectedFile);
             var sampleFile = await StorageFile.GetFileFromPathAsync(selectedFile);
             var fs = await FileIO.ReadBufferAsync(sampleFile);
-            using( var stream = fs.AsStream())
-            { 
+            using (var stream = fs.AsStream())
+            {
                 try
                 {
                     var client = new FaceServiceClient(subscriptionKey);
                     var faces = await client.DetectAsync(stream, true, true, true);
                     Debug.WriteLine("Response: Success. Detected {0} face(s) in {1}", faces.Length, selectedFile);
                     Debug.WriteLine("{0} face(s) has been detected", faces.Length);
+
+                    var newSourceFileName = string.Format(@"Temp\{0}.jpg", Guid.NewGuid());
+                    var newSourceFile = await KnownFolders.PicturesLibrary.CreateFileAsync(newSourceFileName, CreationCollisionOption.ReplaceExisting);
+                    await file.CopyAndReplaceAsync(newSourceFile);
 
                     foreach (var face in faces)
                     {
@@ -43,13 +47,10 @@ namespace Windows81App1.Lib
                         var startingPoint = new Point(face.FaceRectangle.Left, face.FaceRectangle.Top);
                         var tbSize = new Size(face.FaceRectangle.Width, face.FaceRectangle.Height);
 
-                        var fileName = string.Format("{0}.jpg", face.FaceId);
+                        var fileName = string.Format(@"Temp\{0}.jpg", face.FaceId);
                         var fileFaceImage = await KnownFolders.PicturesLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
                         // save face file
-                        var newSourceFileName = string.Format("{0}.jpg", Guid.NewGuid());
-                        var newSourceFile = await KnownFolders.PicturesLibrary.CreateFileAsync(newSourceFileName, CreationCollisionOption.ReplaceExisting);
-                        await file.CopyAndReplaceAsync(newSourceFile);
                         await CropBitmap.SaveCroppedBitmapAsync(newSourceFile, fileFaceImage, startingPoint, tbSize);
 
                         var newFace = new Face
@@ -62,8 +63,8 @@ namespace Windows81App1.Lib
                             FaceId = face.FaceId.ToString(),
                             Gender = face.Attributes.Gender,
                             Age = string.Format("{0:#} years old", face.Attributes.Age),
-                            ImageFacePath = fileFaceImage.Path
-                    };
+                            ImageFacePath = @"file:///" + fileFaceImage.Path
+                        };
                         detectedFaces.Add(newFace);
                     }
                 }

@@ -46,7 +46,7 @@ namespace Windows81App1
                 }
                 SelectedFile = file.Path;
                 var faceApi = new Lib.FaceApiHelper();
-                DetectedFaces = await faceApi.StartFaceDetection(SelectedFile, file, "");
+                DetectedFaces = await faceApi.StartFaceDetection(SelectedFile, file, "4c138b4d82b947beb2e2926c92d1e514");
             }
         }
 
