@@ -38,21 +38,22 @@ namespace Windows81App1
             // file is null if user cancels the file picker.
             if (file != null)
             {
-                var bitmapImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
-                using (var fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
-                {
-                    bitmapImage.SetSource(fileStream);
-                    ImageDisplay.Source = bitmapImage;
-                }
-                SelectedFile = file.Path;
-                var faceApi = new Lib.FaceApiHelper();
-                DetectedFaces = await faceApi.StartFaceDetection(SelectedFile, file, "4c138b4d82b947beb2e2926c92d1e514");
+                //var bitmapImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
+                //using (var fileStream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read))
+                //{
+                //    bitmapImage.SetSource(fileStream);
+                //    ImageDisplay.Source = bitmapImage;
+                //}
+                SelectedFileUri = new Uri(file.Path, UriKind.RelativeOrAbsolute);
+                //var faceApi = new Lib.FaceApiHelper();
+                //DetectedFaces = await faceApi.StartFaceDetection(SelectedFile, file, "4c138b4d82b947beb2e2926c92d1e514");
             }
         }
 
         #region Properties
         private ObservableCollection<Face> _detectedFaces;
-        private string _selectedFile;
+        private Uri _selectedFileUri;
+
         public ObservableCollection<Face> DetectedFaces
         {
             get { return _detectedFaces; }
@@ -64,14 +65,16 @@ namespace Windows81App1
             }
         }
 
-
-        public string SelectedFile
+        public Uri SelectedFileUri
         {
-            get { return _selectedFile; }
+            get
+            {
+                return _selectedFileUri;
+            }
             set
             {
-                if (value == _selectedFile) return;
-                _selectedFile = value;
+                if (value == _selectedFileUri) return;
+                _selectedFileUri = value;
                 OnPropertyChanged();
             }
         }

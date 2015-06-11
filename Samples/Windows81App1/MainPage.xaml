@@ -31,7 +31,7 @@
                Height="{Binding MaxImageSize}"
                Width="{Binding MaxImageSize}"
                x:Name="ImageDisplay"
-               Source="{Binding SelectedFile}" />
+               Source="{Binding SelectedFileUri}" />
 
         <Canvas HorizontalAlignment="Left"
                 VerticalAlignment="Top"
@@ -75,7 +75,7 @@
                                    Grid.RowSpan="3"
                                    Width="64"
                                    Height="64"
-                                   Source="{Binding ImageFacePath}">
+                                   Source="{Binding ImageFacePathUri}">
                             </Image>
                             <TextBlock Grid.Column="2"
                                        Grid.Row="1"

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Windows81App1.UserControls
@@ -43,6 +44,8 @@ namespace Windows81App1.UserControls
         private int _width;
 
         private string _imageFacePath;
+
+        private Uri _imageFacePathUri;
 
         #endregion Fields
 
@@ -167,8 +170,9 @@ namespace Windows81App1.UserControls
             set
             {
                 _imageFacePath = value;
+                ImageFacePathUri = new Uri(_imageFacePath, UriKind.RelativeOrAbsolute);
                 OnPropertyChanged();
-           }
+            }
         }
 
         public int Width
@@ -181,6 +185,16 @@ namespace Windows81App1.UserControls
             set
             {
                 _width = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Uri ImageFacePathUri
+        {
+            get { return _imageFacePathUri; }
+            set
+            {
+                _imageFacePathUri = value;
                 OnPropertyChanged();
             }
         }
