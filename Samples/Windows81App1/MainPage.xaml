@@ -7,9 +7,6 @@
       xmlns:lib="using:Windows81App1.Lib"
       mc:Ignorable="d">
 
-    <Page.Resources>
-        <lib:MarginConverter x:Key="marginConverter" />
-    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -17,7 +14,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"></ColumnDefinition>
-            <ColumnDefinition Width="250"></ColumnDefinition>
+            <ColumnDefinition Width="480"></ColumnDefinition>
             <ColumnDefinition Width="250"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Button x:Name="ButtonGetData"
@@ -36,43 +33,14 @@
                x:Name="ImageDisplay"
                Source="{Binding SelectedFile}" />
 
-        <StackPanel x:Name="StackPanelImageFacesDetected"
-                    Grid.Row="1"
-                    Grid.Column="1">
-            <ItemsControl HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          ItemsSource="{Binding FacesRect}"
-                          Height="{Binding MaxImageSize}"
-                          Width="{Binding MaxImageSize}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas Background="Transparent"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Height="{Binding MaxImageSize}"
-                                Width="{Binding MaxImageSize}"
-                                Margin="{Binding LeftTop, Converter={StaticResource marginConverter}}">
-                        </Canvas>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left"
-                                Value="{Binding Left}" />
-                        <Setter Property="Canvas.Top"
-                                Value="{Binding Top}" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Rectangle Width="{Binding Width}"
-                                   Height="{Binding Height}"
-                                   Stroke="#FF26B8F4"
-                                   StrokeThickness="1" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+        <Canvas HorizontalAlignment="Left"
+               VerticalAlignment="Top"
+               Grid.Row="1"
+               Grid.Column="1"
+               Height="{Binding MaxImageSize}"
+               Width="{Binding MaxImageSize}"
+               x:Name="CanvasDisplay" />
+
 
         <StackPanel x:Name="StackPanelFaces"
                     Grid.Row="1"
