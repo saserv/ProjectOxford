@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 
 namespace Windows81App1.Lib
@@ -42,6 +43,21 @@ namespace Windows81App1.Lib
             return fileFaceImage;
         }
 
-
+        public static async Task<Tuple<int, int>> GetImageInfoForRendering(string imageFilePath)
+        {
+            try
+            {
+                var sampleFile = await StorageFile.GetFileFromPathAsync(imageFilePath);
+                var file = await sampleFile.OpenAsync(FileAccessMode.ReadWrite);
+                var decoder = await BitmapDecoder.CreateAsync(file);
+                var pixelWidth = int.Parse(decoder.PixelWidth.ToString());
+                var pixelHeight = int.Parse(decoder.PixelHeight.ToString());
+                return new Tuple<int, int>(pixelWidth, pixelHeight);
+            }
+            catch
+            {
+                return new Tuple<int, int>(0, 0);
+            }
+        }
     }
 }

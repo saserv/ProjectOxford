@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.Storage.Pickers;
 using Windows.UI;
@@ -42,31 +43,34 @@ namespace Windows81App1
 
             FileHelper.ClearTempFolder();
 
+            var imageInfo = await FileHelper.GetImageInfoForRendering(file.Path);
+            NewImageSizeWidth = 300;
+            NewImageSizeHeight = NewImageSizeWidth * imageInfo.Item2 / imageInfo.Item1;
+
             var newSourceFile = await FileHelper.CreateCopyOfSelectedImage(file);
             var uriSource = new Uri(newSourceFile.Path);
             SelectedFileBitmapImage = new BitmapImage(uriSource);
-            
+
+
             // start face api detection
             var faceApi = new FaceApiHelper();
-            DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, file, "");
+            DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, newSourceFile, imageInfo, "");
 
             // draw rectangles 
             var color = Colors.Blue;
             var bg = Colors.Transparent;
             CanvasDisplay.Children.Clear();
-            foreach (var detectedFace in DetectedFaces)
+            foreach (var rectangle in from detectedFace in DetectedFaces let margin = new Thickness(detectedFace.RectLeft, detectedFace.RectTop, 0, 0) select new Rectangle
             {
-                var margin = new Thickness(detectedFace.RectLeft, detectedFace.RectTop, 0, 0);
-                var rectangle = new Rectangle
-                {
-                    Stroke = new SolidColorBrush(color),
-                    Fill = new SolidColorBrush(bg),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Height = detectedFace.RectHeight,
-                    Width = detectedFace.RectWidth,
-                    Margin = margin
-                };
+                Stroke = new SolidColorBrush(color),
+                Fill = new SolidColorBrush(bg),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Height = detectedFace.RectHeight,
+                Width = detectedFace.RectWidth,
+                Margin = margin
+            })
+            {
                 CanvasDisplay.Children.Add(rectangle);
             }
         }
@@ -75,6 +79,8 @@ namespace Windows81App1
         #region Properties
         private ObservableCollection<Face> _detectedFaces;
         private BitmapImage _selectedFileBitmapImage;
+        private int _newImageSizeWidth;
+        private int _newImageSizeHeight;
 
         public ObservableCollection<Face> DetectedFaces
         {
@@ -101,11 +107,25 @@ namespace Windows81App1
             }
         }
 
-        public int MaxImageSize
+        public int NewImageSizeWidth
         {
-            get
+            get { return _newImageSizeWidth; }
+            set
             {
-                return 300;
+                if (value == _newImageSizeWidth) return;
+                _newImageSizeWidth = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int NewImageSizeHeight
+        {
+            get { return _newImageSizeHeight; }
+            set
+            {
+                if (value == _newImageSizeHeight) return;
+                _newImageSizeHeight = value;
+                OnPropertyChanged();
             }
         }
 

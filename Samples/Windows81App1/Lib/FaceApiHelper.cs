@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows81App1.UserControls;
 using Microsoft.ProjectOxford.Face;
@@ -14,15 +13,13 @@ namespace Windows81App1.Lib
     {
         public int MaxImageSize => 300;
 
-        public async Task<ObservableCollection<Face>> StartFaceDetection(string selectedFile, StorageFile file, string subscriptionKey)
+        public async Task<ObservableCollection<Face>> StartFaceDetection(string selectedFile, StorageFile file, Tuple<int, int> imageInfo, string subscriptionKey)
         {
             var detectedFaces = new ObservableCollection<Face>();
 
             Debug.WriteLine("Request: Detecting {0}", selectedFile);
             var sampleFile = await StorageFile.GetFileFromPathAsync(selectedFile);
             var fs = await FileIO.ReadBufferAsync(sampleFile);
-
-            var imageInfo = await GetImageInfoForRendering(selectedFile);
 
             using (var stream = fs.AsStream())
             {
@@ -69,48 +66,13 @@ namespace Windows81App1.Lib
         {
             var imageWidth = imageInfo.Item1;
             var imageHeight = imageInfo.Item2;
-            float ratio = (float)imageWidth / imageHeight;
-            int uiWidth;
-            int uiHeight;
-            if (ratio > 1.0)
-            {
-                uiWidth = maxSize;
-                uiHeight = (int)(maxSize / ratio);
-            }
-            else
-            {
-                uiHeight = maxSize;
-                uiWidth = (int)(ratio * uiHeight);
-            }
-
-            var uiXOffset = (maxSize - uiWidth) / 2;
-            var uiYOffset = (maxSize - uiHeight) / 2;
-            var scale = (float)uiWidth / imageWidth;
-
-            face.RectLeft = (int) ((face.Left*scale) + uiXOffset);
-            face.RectTop = (int) ((face.Top*scale) + uiYOffset);
-            face.RectHeight = (int) (face.Height*scale);
-            face.RectWidth = (int) (face.Width*scale);
-
+            var newWidth = maxSize;
+            var newHeight = maxSize * imageHeight / imageWidth;
+            face.RectLeft = newWidth * face.Left / imageWidth; ;
+            face.RectTop = newHeight * face.Top / imageHeight; ;
+            face.RectHeight = newHeight * face.Height / imageHeight;
+            face.RectWidth = newWidth*face.Width/ imageWidth;
             return face;
         }
-
-        private async Task<Tuple<int, int>> GetImageInfoForRendering(string imageFilePath)
-        {
-            try
-            {
-                var sampleFile = await StorageFile.GetFileFromPathAsync(imageFilePath);
-                var file = await sampleFile.OpenAsync(FileAccessMode.ReadWrite);
-                var decoder = await BitmapDecoder.CreateAsync(file);
-                var pixelWidth = int.Parse(decoder.PixelWidth.ToString());
-                var pixelHeight = int.Parse(decoder.PixelHeight.ToString());
-                return new Tuple<int, int>(pixelWidth, pixelHeight);
-            }
-            catch
-            {
-                return new Tuple<int, int>(0, 0);
-            }
-        }
-
     }
 }
