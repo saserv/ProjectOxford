@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"></ColumnDefinition>
-            <ColumnDefinition Width="480"></ColumnDefinition>
+            <ColumnDefinition Width="300"></ColumnDefinition>
             <ColumnDefinition Width="250"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Button x:Name="ButtonGetData"
@@ -28,11 +28,12 @@
                VerticalAlignment="Top"
                Grid.Row="1"
                Grid.Column="1"
+               Stretch="Fill"
                Height="{Binding MaxImageSize}"
                Width="{Binding MaxImageSize}"
                x:Name="ImageDisplay"
-               Source="{Binding SelectedFileBitmapImage}" />
-
+               Source="{Binding SelectedFileBitmapImage}"
+               />
         <Canvas HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Grid.Row="1"

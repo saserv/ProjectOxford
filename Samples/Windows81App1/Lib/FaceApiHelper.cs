@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows81App1.UserControls;
 using Microsoft.ProjectOxford.Face;
@@ -11,13 +12,7 @@ namespace Windows81App1.Lib
 {
     internal class FaceApiHelper
     {
-        public int MaxImageSize
-        {
-            get
-            {
-                return 300;
-            }
-        }
+        public int MaxImageSize => 300;
 
         public async Task<ObservableCollection<Face>> StartFaceDetection(string selectedFile, StorageFile file, string subscriptionKey)
         {
@@ -26,6 +21,9 @@ namespace Windows81App1.Lib
             Debug.WriteLine("Request: Detecting {0}", selectedFile);
             var sampleFile = await StorageFile.GetFileFromPathAsync(selectedFile);
             var fs = await FileIO.ReadBufferAsync(sampleFile);
+
+            var imageInfo = await GetImageInfoForRendering(selectedFile);
+
             using (var stream = fs.AsStream())
             {
                 try
@@ -52,6 +50,10 @@ namespace Windows81App1.Lib
                             Age = string.Format("{0:#} years old", face.Attributes.Age),
                             ImageFacePath = fileFaceImage.Path
                         };
+
+                        // calculate rect image
+                        newFace = CalculateFaceRectangleForRendering(newFace, MaxImageSize, imageInfo);
+
                         detectedFaces.Add(newFace);
                     }
                 }
@@ -62,5 +64,53 @@ namespace Windows81App1.Lib
             }
             return detectedFaces;
         }
+
+        private static Face CalculateFaceRectangleForRendering(Face face, int maxSize, Tuple<int, int> imageInfo)
+        {
+            var imageWidth = imageInfo.Item1;
+            var imageHeight = imageInfo.Item2;
+            float ratio = (float)imageWidth / imageHeight;
+            int uiWidth;
+            int uiHeight;
+            if (ratio > 1.0)
+            {
+                uiWidth = maxSize;
+                uiHeight = (int)(maxSize / ratio);
+            }
+            else
+            {
+                uiHeight = maxSize;
+                uiWidth = (int)(ratio * uiHeight);
+            }
+
+            var uiXOffset = (maxSize - uiWidth) / 2;
+            var uiYOffset = (maxSize - uiHeight) / 2;
+            var scale = (float)uiWidth / imageWidth;
+
+            face.RectLeft = (int) ((face.Left*scale) + uiXOffset);
+            face.RectTop = (int) ((face.Top*scale) + uiYOffset);
+            face.RectHeight = (int) (face.Height*scale);
+            face.RectWidth = (int) (face.Width*scale);
+
+            return face;
+        }
+
+        private async Task<Tuple<int, int>> GetImageInfoForRendering(string imageFilePath)
+        {
+            try
+            {
+                var sampleFile = await StorageFile.GetFileFromPathAsync(imageFilePath);
+                var file = await sampleFile.OpenAsync(FileAccessMode.ReadWrite);
+                var decoder = await BitmapDecoder.CreateAsync(file);
+                var pixelWidth = int.Parse(decoder.PixelWidth.ToString());
+                var pixelHeight = int.Parse(decoder.PixelHeight.ToString());
+                return new Tuple<int, int>(pixelWidth, pixelHeight);
+            }
+            catch
+            {
+                return new Tuple<int, int>(0, 0);
+            }
+        }
+
     }
 }

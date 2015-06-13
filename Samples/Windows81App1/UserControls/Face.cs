@@ -16,6 +16,10 @@ namespace Windows81App1.UserControls
         private int _left;
         private int _top;
         private int _width;
+        private int _rectHeight;
+        private int _rectLeft;
+        private int _rectTop;
+        private int _rectWidth;
         private string _imageFacePath;
 
         private BitmapImage _imageFaceBitmapImage;
@@ -157,6 +161,46 @@ namespace Windows81App1.UserControls
             set
             {
                 _imageFaceBitmapImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int RectHeight
+        {
+            get { return _rectHeight; }
+            set
+            {
+                _rectHeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int RectLeft
+        {
+            get { return _rectLeft; }
+            set
+            {
+                _rectLeft = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int RectTop
+        {
+            get { return _rectTop; }
+            set
+            {
+                _rectTop = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int RectWidth
+        {
+            get { return _rectWidth; }
+            set
+            {
+                _rectWidth = value;
                 OnPropertyChanged();
             }
         }
