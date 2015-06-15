@@ -22,8 +22,7 @@
                 Click="ButtonGetData_Click"
                 Grid.Column="1"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="#3FFF0000">Get Face API data</Button>
+                VerticalAlignment="Stretch">Get Face API data</Button>
 
         <Image HorizontalAlignment="Left"
                VerticalAlignment="Top"
@@ -47,11 +46,6 @@
                     <Canvas />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path=Information}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
         </ItemsControl>
 
 
