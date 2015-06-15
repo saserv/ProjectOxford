@@ -44,7 +44,8 @@ namespace Windows81App1.Lib
                             Height = face.FaceRectangle.Height,
                             FaceId = face.FaceId.ToString(),
                             Gender = face.Attributes.Gender,
-                            Age = string.Format("{0:#} years old", face.Attributes.Age),
+                            Age = face.Attributes.Age,
+                            AgeComplete = string.Format("{0:#} years old", face.Attributes.Age),
                             ImageFacePath = fileFaceImage.Path
                         };
 

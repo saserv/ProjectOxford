@@ -10,7 +10,7 @@ namespace Windows81App1.UserControls
         #region Fields
 
         private string _gender;
-        private string _age;
+        private double _age;
         private string _personName;
         private int _height;
         private int _left;
@@ -23,6 +23,7 @@ namespace Windows81App1.UserControls
         private string _imageFacePath;
 
         private BitmapImage _imageFaceBitmapImage;
+        private string _ageComplete;
 
         #endregion Fields
 
@@ -48,7 +49,15 @@ namespace Windows81App1.UserControls
             }
         }
 
-        public string Age
+        public string Information
+        {
+            get
+            {
+                return string.Format("{0}, {1}", _age, _gender);
+            }
+        }
+
+        public double Age
         {
             get
             {
@@ -58,6 +67,19 @@ namespace Windows81App1.UserControls
             set
             {
                 _age = value;
+                OnPropertyChanged();
+            }
+        }
+        public string AgeComplete
+        {
+            get
+            {
+                return _ageComplete;
+            }
+
+            set
+            {
+                _ageComplete = value;
                 OnPropertyChanged();
             }
         }

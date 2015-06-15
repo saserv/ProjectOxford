@@ -32,15 +32,26 @@
                Height="{Binding NewImageSizeHeight}"
                Width="{Binding NewImageSizeWidth}"
                x:Name="ImageDisplay"
-               Source="{Binding SelectedFileBitmapImage}"
-               />
-        <Canvas HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Grid.Row="1"
-                Grid.Column="1"
-                Height="{Binding MaxImageSize}"
-                Width="{Binding MaxImageSize}"
-                x:Name="CanvasDisplay" />
+               Source="{Binding SelectedFileBitmapImage}" />
+        <ItemsControl x:Name="ItemsControlDetectedFaces"
+                      ItemsSource="{Binding Path=DetectedFacesCanvas}"
+                      Height="{Binding NewImageSizeHeight}"
+                      Width="{Binding NewImageSizeWidth}"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Grid.Row="1"
+                      Grid.Column="1">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Information}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
 
         <StackPanel x:Name="StackPanelFaces"
