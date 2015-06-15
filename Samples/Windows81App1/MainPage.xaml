@@ -22,7 +22,8 @@
                 Click="ButtonGetData_Click"
                 Grid.Column="1"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">Get Data</Button>
+                VerticalAlignment="Stretch"
+                Background="#3FFF0000">Get Face API data</Button>
 
         <Image HorizontalAlignment="Left"
                VerticalAlignment="Top"

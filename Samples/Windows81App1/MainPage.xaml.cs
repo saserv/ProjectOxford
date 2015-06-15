@@ -57,8 +57,8 @@ namespace Windows81App1
             DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, newSourceFile, imageInfo, "");
 
             // draw rectangles 
-            var color = Colors.Red;
-            var bg = new SolidColorBrush(color) {Opacity = 25, Color = color};
+            var color = Color.FromArgb(125, 255, 0, 0);
+            var bg = new SolidColorBrush(color); 
 
             DetectedFacesCanvas = new ObservableCollection<Canvas>();
             foreach (var detectedFace in DetectedFaces)
@@ -84,7 +84,6 @@ namespace Windows81App1
         private BitmapImage _selectedFileBitmapImage;
         private int _newImageSizeWidth;
         private int _newImageSizeHeight;
-        private ObservableCollection<Rectangle> _detectedFacesRectngles;
         private ObservableCollection<Canvas> _detectedFacesCanvas;
 
         public ObservableCollection<Face> DetectedFaces
@@ -94,17 +93,6 @@ namespace Windows81App1
             {
                 if (Equals(value, _detectedFaces)) return;
                 _detectedFaces = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ObservableCollection<Rectangle> DetectedFacesRectangles
-        {
-            get { return _detectedFacesRectngles; }
-            set
-            {
-                if (Equals(value, _detectedFacesRectngles)) return;
-                _detectedFacesRectngles = value;
                 OnPropertyChanged();
             }
         }
