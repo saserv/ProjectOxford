@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -43,9 +45,20 @@ namespace Windows81App1
 
             FileHelper.ClearTempFolder();
 
+            PerformFaceAnalysis(file);
+        }
+
+        private async void ButtonGetWebCamPicture_Click(object sender, RoutedEventArgs e)
+        {
+            var file = await CameraActions.TakeWebCamPictureAndReturnFile(false);
+            PerformFaceAnalysis(file);
+        }
+
+        private async void PerformFaceAnalysis(StorageFile file)
+        {
             var imageInfo = await FileHelper.GetImageInfoForRendering(file.Path);
             NewImageSizeWidth = 300;
-            NewImageSizeHeight = NewImageSizeWidth * imageInfo.Item2 / imageInfo.Item1;
+            NewImageSizeHeight = NewImageSizeWidth*imageInfo.Item2/imageInfo.Item1;
 
             var newSourceFile = await FileHelper.CreateCopyOfSelectedImage(file);
             var uriSource = new Uri(newSourceFile.Path);
@@ -54,17 +67,17 @@ namespace Windows81App1
 
             // start face api detection
             var faceApi = new FaceApiHelper();
-            DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, newSourceFile, imageInfo, "");
+            DetectedFaces = await faceApi.StartFaceDetection(newSourceFile.Path, newSourceFile, imageInfo, "4c138b4d82b947beb2e2926c92d1e514");
 
             // draw rectangles 
             var color = Color.FromArgb(125, 255, 0, 0);
-            var bg = new SolidColorBrush(color); 
+            var bg = new SolidColorBrush(color);
 
             DetectedFacesCanvas = new ObservableCollection<Canvas>();
             foreach (var detectedFace in DetectedFaces)
             {
                 var margin = new Thickness(detectedFace.RectLeft, detectedFace.RectTop, 0, 0);
-                var canvas   = new Canvas()
+                var canvas = new Canvas()
                 {
                     Background = bg,
                     HorizontalAlignment = HorizontalAlignment.Left,
@@ -75,7 +88,6 @@ namespace Windows81App1
                 };
                 DetectedFacesCanvas.Add(canvas);
             }
-
         }
 
 
@@ -155,5 +167,6 @@ namespace Windows81App1
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+
     }
 }

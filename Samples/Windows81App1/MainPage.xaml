@@ -17,12 +17,18 @@
             <ColumnDefinition Width="350"></ColumnDefinition>
             <ColumnDefinition Width="250"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        <StackPanel                 Grid.ColumnSpan="2"
+                                    Grid.Column="1"
+                                    Orientation="Horizontal">
         <Button x:Name="ButtonGetData"
-                Grid.ColumnSpan="2"
                 Click="ButtonGetData_Click"
-                Grid.Column="1"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">Get Face API data</Button>
+                VerticalAlignment="Stretch">Select file and perform Face Analysis</Button>
+            <Button x:Name="ButtonGetWebCamPicture"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Click="ButtonGetWebCamPicture_Click">Take picture and perform Face Analysis</Button>
+        </StackPanel>
 
         <Image HorizontalAlignment="Left"
                VerticalAlignment="Top"

@@ -112,6 +112,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Lib\CameraActions.cs" />
     <Compile Include="Lib\CropBitmap.cs" />
     <Compile Include="Lib\FaceApiHelper.cs" />
     <Compile Include="Lib\FileHelper.cs" />
