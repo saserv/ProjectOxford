@@ -9,7 +9,7 @@
 // ReSharper disable InconsistentNaming
 // ReSharper disable CheckNamespace
 
-namespace Windows81App1.Annotations
+namespace WpfTest01.Annotations
 {
   /// <summary>
   /// Indicates that the value of the marked element could be <c>null</c> sometimes,
