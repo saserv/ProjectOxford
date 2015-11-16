@@ -50,7 +50,6 @@ namespace WpfTest01
             SelectedFile = dlg.FileName;
             var faceApi = new FaceApiHelper();
             var returnData = await faceApi.StartFaceDetection(SelectedFile, Properties.Settings.Default.FaceApiKey, Properties.Settings.Default.EmotionsApiKey);
-
             DetectedFaces = returnData.Item1;
             FacesRect = returnData.Item2;
 

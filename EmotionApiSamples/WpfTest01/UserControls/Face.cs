@@ -56,6 +56,7 @@ namespace WpfTest01.UserControls
         private Scores _scores;
         private string _scoredEmotion;
         private Guid _faceId;
+        private string _faceInformation;
 
         #endregion Fields
 
@@ -97,6 +98,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _gender = value;
+                CompleteFaceInformation();
                 OnPropertyChanged<string>();
             }
         }
@@ -114,6 +116,7 @@ namespace WpfTest01.UserControls
             set
             {
                 _age = value;
+                CompleteFaceInformation();
                 OnPropertyChanged<string>();
             }
         }
@@ -248,9 +251,27 @@ namespace WpfTest01.UserControls
             }
         }
 
+        public string FaceInformation
+        {
+            get
+            {
+                return _faceInformation;
+            }
+            set
+            {
+                _faceInformation = value;
+                OnPropertyChanged<string>();
+            }
+        }
+
         #endregion Properties
 
         #region Methods
+
+        public void CompleteFaceInformation()
+        {
+            FaceInformation = $@"{Age}, {Gender}";
+        }
 
         public void CalculateEmotion()
         {

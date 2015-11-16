@@ -53,7 +53,7 @@ namespace WpfTest01.Lib
                             Height = face.FaceRectangle.Height,
                             FaceId = face.FaceId,
                             Gender = face.Attributes.Gender,
-                            Age = string.Format("{0:#} years old", face.Attributes.Age),
+                            Age = face.Attributes.Age.ToString(),
                         };
                         detectedFaces.Add(detectedFace);
 
@@ -72,6 +72,8 @@ namespace WpfTest01.Lib
                         foreach (var detectedFace in detectedFaces.Where(detectedFace => faceRect.FaceId == detectedFace.FaceId))
                         {
                             faceRect.Scores = detectedFace.Scores;
+                            faceRect.Age = detectedFace.Age;
+                            faceRect.Gender = detectedFace.Gender;
                         }
                     }
                 }

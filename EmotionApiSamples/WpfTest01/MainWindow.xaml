@@ -85,10 +85,14 @@
                                        Stroke="#FF26B8F4"
                                        StrokeThickness="1">
                             </Rectangle>
+                            <TextBlock Text="{Binding FaceInformation}"
+                                       Background="White"
+                                       Foreground="Blue"
+                                       TextWrapping="WrapWithOverflow" />
                             <TextBlock Text="{Binding ScoredEmotion}"
                                        Background="#FF26B8F4"
                                        Foreground="White"
-                                       TextWrapping="WrapWithOverflow"></TextBlock>
+                                       TextWrapping="WrapWithOverflow" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
