@@ -36,15 +36,29 @@
                 Margin="10"
                 Click="ButtonGetData_Click"
                 Content="Start Image Analysis" />
+        <StackPanel Grid.Row="1"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal">
         <CheckBox x:Name="CheckBoxEmotions"
-                  Grid.Row="1"
                   Margin="10"
                   FontSize="18"
-                  Grid.Column="1"
                   HorizontalAlignment="Left"
                   IsChecked="True"
-                  VerticalAlignment="Center">Analyze Emotions</CheckBox>
-
+                  VerticalAlignment="Center">Emotions API</CheckBox>
+            <CheckBox x:Name="CheckBoxVision"
+                      Margin="10"
+                      FontSize="18"
+                      HorizontalAlignment="Left"
+                      IsChecked="True"
+                      VerticalAlignment="Center">Vision API</CheckBox>            
+            <CheckBox x:Name="CheckBoxOcr"
+                      Margin="10"
+                      FontSize="18"
+                      HorizontalAlignment="Left"
+                      IsChecked="True"
+                      VerticalAlignment="Center">OCR</CheckBox>
+        </StackPanel>
         <Image HorizontalAlignment="Center"
                VerticalAlignment="Center"
                Grid.Row="2"

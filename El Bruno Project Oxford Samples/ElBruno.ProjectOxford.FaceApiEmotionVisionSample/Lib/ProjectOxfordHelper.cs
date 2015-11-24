@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -294,6 +295,70 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample.Lib
                 }
             }
             return resultToString;
+        }
+
+        public async Task<OcrResults> RecognizeText(string selectedFile, bool detectOrientation = true, string languageCode = LanguageCodes.AutoDetect)
+        {
+            IVisionServiceClient visionClient = new VisionServiceClient(_subscriptionKeyVision);
+            OcrResults ocrResult = null;
+            try
+            {
+                if (File.Exists(selectedFile))
+                {
+                    using (var fileStreamVision = File.OpenRead(selectedFile))
+                    {
+                        ocrResult = await visionClient.RecognizeTextAsync(fileStreamVision, languageCode, detectOrientation);
+                    }
+                }
+                else
+                {
+                    ErrorMesssage = "Invalid image path or Url";
+                }
+            }
+            catch (ClientException e)
+            {
+                ErrorMesssage = e.Error != null ? e.Error.Message : e.Message;
+            }
+            catch (Exception exception)
+            {
+                ErrorMesssage = exception.ToString();
+            }
+            return ocrResult;
+
+        }
+
+        public async Task<string> RecognizeTextAsString(string selectedFile, bool detectOrientation = true,
+            string languageCode = LanguageCodes.AutoDetect)
+        {
+            var ocrResult = await RecognizeText(selectedFile, detectOrientation, languageCode);
+            var result = $@"Language: {ocrResult.Language}
+Orientation: {ocrResult.Orientation}
+Text Angle: {ocrResult.TextAngle}
+";
+
+            foreach (var region in ocrResult.Regions)
+            {
+                result += $@"Region
+
+BoundingBox: {region.BoundingBox}
+Rectangle: 
+    Left {region.Rectangle.Left}, Top {region.Rectangle.Top}, 
+    Height {region.Rectangle.Height}, Width {region.Rectangle.Width} 
+
+Lines
+";
+                foreach (var line in region.Lines)
+                {
+                    foreach (var word in line.Words)
+                    {
+                        result += $@"{word.Text} ";
+                    }
+                    result += $@"
+";
+                }
+            }
+
+            return result;
         }
 
         public string ErrorMesssage { get; set; }

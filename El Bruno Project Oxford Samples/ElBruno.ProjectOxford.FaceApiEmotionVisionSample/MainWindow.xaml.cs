@@ -59,7 +59,16 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample
             DetectedFaces = returnData.Item1;
             FacesRect = returnData.Item2;
 
-            ImageAnalysis = await projectOxfordHelper.AnalyzeImageAsString(SelectedFile);
+            ImageAnalysis = "";
+            var visionAnalysis = false;
+            if (CheckBoxVision.IsChecked != null) visionAnalysis = CheckBoxVision.IsChecked.Value;
+            if(visionAnalysis)
+                ImageAnalysis = await projectOxfordHelper.AnalyzeImageAsString(SelectedFile);
+
+            var ocr = false;
+            if (CheckBoxOcr.IsChecked != null) ocr = CheckBoxOcr.IsChecked.Value;
+            if (ocr)
+                ImageAnalysis += await projectOxfordHelper.RecognizeTextAsString(SelectedFile);
 
             StatusInformation = $@"{DetectedFaces.Count} faces datected.";
         }
