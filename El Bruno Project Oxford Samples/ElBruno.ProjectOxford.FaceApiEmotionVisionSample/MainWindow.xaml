@@ -74,13 +74,13 @@
             </Image.Style>
         </Image>
 
-        <StackPanel x:Name="StackPanelImageFacesDetected"
+        <StackPanel x:Name="StackPanelImageFaceFramesDetected"
                     Grid.Row="2"
                     Grid.Column="0"
                     Margin="10">
             <ItemsControl HorizontalAlignment="Center"
                           VerticalAlignment="Center"
-                          ItemsSource="{Binding FacesRect}"
+                          ItemsSource="{Binding ImagesFaceFrames}"
                           Panel.ZIndex="999"
                           Height="{Binding MaxImageSize}"
                           Width="{Binding MaxImageSize}">
@@ -108,6 +108,51 @@
                                        Height="{Binding Height}"
                                        Stroke="#FF26B8F4"
                                        StrokeThickness="1">
+                            </Rectangle>
+                            <TextBlock Text="{Binding ScoredEmotion}"
+                                       Background="#FF26B8F4"
+                                       Foreground="White"
+                                       TextWrapping="WrapWithOverflow"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <StackPanel x:Name="StackPanelImageTextFramesDetected"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="10">
+            <ItemsControl HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding ImagesTextFrames}"
+                          Panel.ZIndex="999"
+                          Height="{Binding MaxImageSize}"
+                          Width="{Binding MaxImageSize}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background="Transparent"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Height="{Binding MaxImageSize}"
+                                Width="{Binding MaxImageSize}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left"
+                                Value="{Binding Left}" />
+                        <Setter Property="Canvas.Top"
+                                Value="{Binding Top}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle Width="{Binding Width}"
+                                       Height="{Binding Height}"
+                                       Stroke="LightBlue"
+                                       StrokeThickness="2">
                             </Rectangle>
                             <TextBlock Text="{Binding ScoredEmotion}"
                                        Background="#FF26B8F4"

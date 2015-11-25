@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.ProjectOxford.Emotion;
 using Microsoft.ProjectOxford.Face;
+using Microsoft.ProjectOxford.Face.Contract;
 using Microsoft.ProjectOxford.Vision;
 using Microsoft.ProjectOxford.Vision.Contract;
 using ClientException = Microsoft.ProjectOxford.Face.ClientException;
@@ -154,6 +155,36 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample.Lib
             });
         }
 
+        private Face CalculateTextRectangleForRendering(Face face, int maxSize, Tuple<int, int> imageInfo, int left, int top, int height, int width)
+        {
+            var imageWidth = imageInfo.Item1;
+            var imageHeight = imageInfo.Item2;
+            float ratio = (float)imageWidth / imageHeight;
+            int uiWidth;
+            int uiHeight;
+            if (ratio > 1.0)
+            {
+                uiWidth = maxSize;
+                uiHeight = (int)(maxSize / ratio);
+            }
+            else
+            {
+                uiHeight = maxSize;
+                uiWidth = (int)(ratio * uiHeight);
+            }
+
+            int uiXOffset = (maxSize - uiWidth) / 2;
+            int uiYOffset = (maxSize - uiHeight) / 2;
+            float scale = (float)uiWidth / imageWidth;
+
+            face.Left = (int) ((left*scale) + uiXOffset);
+            face.Top = (int) ((top*scale) + uiYOffset);
+            face.Height = (int) (height*scale);
+            face.Width = (int) (width*scale);
+
+            return face;
+        }
+
         public Tuple<int, int> GetImageInfoForRendering(string imageFilePath)
         {
             try
@@ -297,7 +328,7 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample.Lib
             return resultToString;
         }
 
-        public async Task<OcrResults> RecognizeText(string selectedFile, bool detectOrientation = true, string languageCode = LanguageCodes.AutoDetect)
+        public async Task<OcrResults> OcrRecognizeText(string selectedFile, bool detectOrientation = true, string languageCode = LanguageCodes.AutoDetect)
         {
             IVisionServiceClient visionClient = new VisionServiceClient(_subscriptionKeyVision);
             OcrResults ocrResult = null;
@@ -327,10 +358,14 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample.Lib
 
         }
 
-        public async Task<string> RecognizeTextAsString(string selectedFile, bool detectOrientation = true,
-            string languageCode = LanguageCodes.AutoDetect)
+        public async Task<string> OcrRecognizeTextAsString(string selectedFile, bool detectOrientation = true, string languageCode = LanguageCodes.AutoDetect)
         {
-            var ocrResult = await RecognizeText(selectedFile, detectOrientation, languageCode);
+            OcrResults ocrResult = await OcrRecognizeText(selectedFile, detectOrientation, languageCode);
+            return OcrRecognizeTextAsString(ocrResult);
+        }
+
+        public string OcrRecognizeTextAsString(OcrResults ocrResult)
+        {
             var result = $@"Language: {ocrResult.Language}
 Orientation: {ocrResult.Orientation}
 Text Angle: {ocrResult.TextAngle}
@@ -362,5 +397,22 @@ Lines
         }
 
         public string ErrorMesssage { get; set; }
+
+        public ObservableCollection<Face> OcrGetFramesRectanglesForRecognizedText(OcrResults ocrResults, string selectedFile)
+        {
+            var frames = new ObservableCollection<Face>();
+            var imageInfo = GetImageInfoForRendering(selectedFile);
+
+            foreach (var region in ocrResults.Regions)
+            {
+                var face = new Face();
+                face = CalculateTextRectangleForRendering(face, MaxImageSize, imageInfo, region.Rectangle.Left,
+                    region.Rectangle.Top, region.Rectangle.Height, region.Rectangle.Width);
+                face.ScoredEmotion = $"lines {region.Lines.Length}";
+                frames.Add(face);
+            }
+
+            return frames;
+        }
     }
 }

@@ -14,10 +14,11 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample
     public partial class MainWindow : INotifyPropertyChanged
     {
         private ObservableCollection<Face> _detectedFaces;
-        private ObservableCollection<Face> _facesRect;
+        private ObservableCollection<Face> _imagesFaceFrames;
         private string _selectedFile;
         private string _statusInformation;
         private string _imageAnalysis;
+        private ObservableCollection<Face> _imagesTextFrames;
 
         public MainWindow()
         {
@@ -57,7 +58,7 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample
             var returnData = await projectOxfordHelper.StartFaceDetection(SelectedFile, analyzeEmotions);
             
             DetectedFaces = returnData.Item1;
-            FacesRect = returnData.Item2;
+            ImagesFaceFrames = returnData.Item2;
 
             ImageAnalysis = "";
             var visionAnalysis = false;
@@ -68,7 +69,11 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample
             var ocr = false;
             if (CheckBoxOcr.IsChecked != null) ocr = CheckBoxOcr.IsChecked.Value;
             if (ocr)
-                ImageAnalysis += await projectOxfordHelper.RecognizeTextAsString(SelectedFile);
+            {
+                var ocrResults = await projectOxfordHelper.OcrRecognizeText(SelectedFile);
+                ImageAnalysis += projectOxfordHelper.OcrRecognizeTextAsString(ocrResults);
+                ImagesTextFrames = projectOxfordHelper.OcrGetFramesRectanglesForRecognizedText(ocrResults, SelectedFile);
+            }
 
             StatusInformation = $@"{DetectedFaces.Count} faces datected.";
         }
@@ -91,13 +96,24 @@ namespace ElBruno.ProjectOxford.FaceApiEmotionVisionSample
             }
         }
 
-        public ObservableCollection<Face> FacesRect
+        public ObservableCollection<Face> ImagesFaceFrames
         {
-            get { return _facesRect; }
+            get { return _imagesFaceFrames; }
             set
             {
-                if (Equals(value, _facesRect)) return;
-                _facesRect = value;
+                if (Equals(value, _imagesFaceFrames)) return;
+                _imagesFaceFrames = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Face> ImagesTextFrames
+        {
+            get { return _imagesTextFrames; }
+            set
+            {
+                if (Equals(value, _imagesTextFrames)) return;
+                _imagesTextFrames = value;
                 OnPropertyChanged();
             }
         }
